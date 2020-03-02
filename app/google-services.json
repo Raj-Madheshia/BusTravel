@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "547957621340",
+    "firebase_url": "https://ioe-lab.firebaseio.com",
+    "project_id": "ioe-lab",
+    "storage_bucket": "ioe-lab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547957621340:android:e22fa1e4e8f9c5c21cdc99",
+        "android_client_info": {
+          "package_name": "com.example.bustravel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547957621340-atflaebn4k2olipg4nqbau8mucq47ir3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUq6mHDOeVZ_gDmmmVCL3Eb3jrmSOV4rc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547957621340-atflaebn4k2olipg4nqbau8mucq47ir3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
