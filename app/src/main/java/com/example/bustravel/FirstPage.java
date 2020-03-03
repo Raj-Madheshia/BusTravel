@@ -22,6 +22,8 @@ public class FirstPage extends AppCompatActivity {
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 finish();
+
+
             }
         });
     }
