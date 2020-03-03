@@ -158,6 +158,8 @@ public class FirstPage extends AppCompatActivity {
             text = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
         } catch (UnsupportedEncodingException e) {
             Log.e("UnsupportedEncoding", e.toString());
+        }catch (Exception e){
+            Toast.makeText(FirstPage.this,"Error while reading",Toast.LENGTH_SHORT).show();
         }
 
         tvNFCContent.setText("NFC Content: " + text);
