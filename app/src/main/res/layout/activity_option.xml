@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:weightSum="2"
     android:layout_margin="20sp"
+    android:theme="@style/AppTheme"
     tools:context=".OptionActivity">
 
     <Button
@@ -14,19 +15,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Start Fare Collection"
-        android:background="#fcba03"
+        android:background="@color/main"
         android:layout_margin="20sp"
         android:textSize="30sp"
         android:layout_weight="1"
+        android:textColor="@color/colorPrimaryDark"
         />
     <Button
         android:id="@+id/check"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Check Cards"
-        android:background="#fcba03"
+        android:background="@color/main"
         android:textSize="30sp"
         android:layout_margin="20sp"
         android:layout_weight="1"
+        android:textColor="@color/colorPrimaryDark"
         />
 </LinearLayout>

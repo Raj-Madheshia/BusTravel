@@ -24,8 +24,26 @@
         android:textSize="20sp"
         android:hint="Password"
         />
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="#FFFFFF">
+    <Spinner
+        android:id="@+id/spinner"
+        style="@style/Widget.AppCompat.DropDownItem.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/choose_route"
+        android:entries="@array/routes"
+        android:layout_marginHorizontal="10sp"
+        android:textAlignment="center"
+        android:popupBackground="@color/colorPrimary"
+        android:background="@color/main"
+        />
+    </RelativeLayout>
     <Button
+
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

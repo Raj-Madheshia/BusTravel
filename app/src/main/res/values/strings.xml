@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BusTravel</string>
+    <string name="choose_route">Choose Route</string>
+    <string-array name="routes">
+        <item>360</item>
+        <item>361</item>
+        <item>501</item>
+        <item>238</item>
+    </string-array>
 </resources>
