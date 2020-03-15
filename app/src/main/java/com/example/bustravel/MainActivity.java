@@ -23,15 +23,57 @@ public class MainActivity extends AppCompatActivity {
     private Button login;
     private  FirebaseAuth mAuth;
     private  FirebaseAuth.AuthStateListener mAuthListiner;
+    SqliteDatabaseHelper sqliteDatabaseHelper;
+    String place;
+    String dist;
+    String busno;
+    String buses[][] = {
+            {"Tambo", "0", "360"},
+            {"DHOBI GHAT","0.6", "360"},
+            {"CHEETA CAMP","1.5","360"},
+            {"MANDALA","2.5", "360"},
+            {"BARC GATE 6", "3.7","360"},
+            {"TELECOM FACT", "4.5", "360"},
+            {"PUNJAB WADI", "5.2","360"},
+            {"DECONAR", "5.9", "360"},
+            {"SAMRAT NAGAR","6.5","360"},
+            {"SUBHASNAGAR","7","360"},
+            {"CHEMBUR BRIDGE","8","360"},
+            {"NEHRU NAGAR","8.7","360"},
+            {"KURLA STATION","10.1","360"},
+            {"MAHUL GAON","0","361"},
+            {"MAHUL MARKET","0.9","361"},
+            {"WADALA ROAD","1.6","361"},
+            {"MAZGAON DOCK","2.3","361"},
+            {"HP NAGAR","3.2","361"},
+            {"SHANKAR MANDIR","4.0","361"},
+            {"VASHINAKA","5.2","361"},
+            {"RCF POLICE", "5.7","361"},
+            {"CHEMBUR COLONY","6.4","361"},
+            {"NAVJEEVAN SOCIETY","7.2","361"},
+            {"BASANT PARK","7.9","361"},
+            {"UMARSHI CHOWK","8.7","361"},
+            {"NEHRU NAGAR","9.5","361"},
+            {"KURLA STATION","10.5","361"},
+            {"test","est","38"}
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        sqliteDatabaseHelper = new SqliteDatabaseHelper(this);
         //FireBase Auth
         mAuth = FirebaseAuth.getInstance();
-
+        long datalenght = sqliteDatabaseHelper.getProfilesCount();
+        if(datalenght == 0){
+            for(String[] data: buses){
+                place = data[0];
+                dist = data[1];
+                busno = data[2];
+                sqliteDatabaseHelper.insertDate(place,dist, busno);
+            }
+        }
 
         email = (EditText) findViewById(R.id.editEmail);
         pass = (EditText) findViewById(R.id.editPass);
