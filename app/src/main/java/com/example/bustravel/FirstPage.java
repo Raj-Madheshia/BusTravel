@@ -46,6 +46,7 @@ public class FirstPage extends AppCompatActivity {
     private  FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     SqliteDatabaseHelper sqliteDatabaseHelper;
+
     private String userId;
     private String amount;
     private String msg = "";
