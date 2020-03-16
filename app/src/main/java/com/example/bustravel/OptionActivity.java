@@ -20,6 +20,7 @@ public class OptionActivity extends AppCompatActivity {
 
     private Button conduct;
     private Button check;
+    private Button logout;
     private Boolean exit = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +34,22 @@ public class OptionActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()== null){
                     Intent i=new Intent(OptionActivity.this, MainActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                 }
-
-
             }
         };
         conduct = (Button) findViewById(R.id.conduct);
         check = (Button) findViewById(R.id.check);
+        logout = (Button) findViewById(R.id.logout);
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+            }
+        });
 
         conduct.setOnClickListener(new View.OnClickListener() {
             @Override

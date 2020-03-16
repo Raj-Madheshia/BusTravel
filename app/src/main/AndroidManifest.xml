@@ -20,7 +20,8 @@
             android:parentActivityName=".OptionActivity"
             ></activity>
         <activity android:name=".OptionActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,13 +34,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.nfc.action.NDEF_DISCOVERED" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
 
-                <data android:mimeType="text/plain" />
-            </intent-filter>
+<!--                <data android:mimeType="text/plain" />-->
+<!--            </intent-filter>-->
         </activity>
     </application>
 

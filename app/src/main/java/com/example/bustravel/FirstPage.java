@@ -1,5 +1,4 @@
 package com.example.bustravel;
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -16,12 +15,14 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.lang.Math;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -59,9 +60,13 @@ public class FirstPage extends AppCompatActivity {
     Context context;
 
     TextView tvNFCContent;
-    TextView message;
+    EditText message;
+    TextView amountleft;
     Button btnWrite;
+
     private Spinner source, destination;
+
+    private String SourceDistance="", DestinationDistance="";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +93,11 @@ public class FirstPage extends AppCompatActivity {
 // #####################################################################################
         context = this;
         mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-        userId = currentUser.getUid();
+        try{
+            currentUser = mAuth.getCurrentUser();
+            userId = currentUser.getUid();
+        }catch (Exception e){}
+
 
         mAuthListiner =  new FirebaseAuth.AuthStateListener() {
             @Override
@@ -104,8 +112,9 @@ public class FirstPage extends AppCompatActivity {
         };
 
         tvNFCContent = (TextView) findViewById(R.id.nfc_contents);
-        message = (TextView) findViewById(R.id.edit_message);
+        message = (EditText) findViewById(R.id.edit_message);
         btnWrite = (Button) findViewById(R.id.button);
+        amountleft = (TextView) findViewById(R.id.amountleft);
         source = (Spinner) findViewById(R.id.source);
         destination = (Spinner) findViewById(R.id.destination);
 
@@ -133,9 +142,29 @@ public class FirstPage extends AppCompatActivity {
                     } else {
 
                         // +";"+message.getText().toString()
-                        msg = userId+";"+currentBus+";"+amount;
-                        write(msg, myTag);
-                        Toast.makeText(context, WRITE_SUCCESS, Toast.LENGTH_LONG ).show();
+                        // append above for initial setup in rfid cards instead of amount
+
+                        if("".equals(SourceDistance)  ||  "".equals(DestinationDistance)){
+                            Toast.makeText(FirstPage.this,"Select Source and Destination Properly", Toast.LENGTH_SHORT).show();
+                        }else {
+                            msg = userId+";"+currentBus+";"+amount;
+                            float start = Float.parseFloat(SourceDistance);
+                            float end = Float.parseFloat(DestinationDistance);
+                            float number = start-end;
+                            number = (number < 0 ? -number : number);
+                            float fare = (float) (Math.ceil(number/5)*5);
+                            float amountavil = Float.parseFloat(amount);
+                            if(amountavil < fare){
+                                Toast.makeText(FirstPage.this, "Not Sufficient balance",Toast.LENGTH_SHORT).show();
+                            }else{
+                                amount = Float.toString(amountavil-fare);
+                                msg = userId+";"+currentBus+";"+amount;
+                                write(msg, myTag);
+                                Toast.makeText(context, WRITE_SUCCESS, Toast.LENGTH_LONG ).show();
+                                tvNFCContent.setText(msg);
+                                amountleft.setText("Amount Available:   "+amount);
+                            }
+                        }
                     }
                 } catch (IOException e) {
                     Toast.makeText(context, WRITE_ERROR, Toast.LENGTH_LONG ).show();
@@ -159,6 +188,30 @@ public class FirstPage extends AppCompatActivity {
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[] { tagDetected };
 
+        source.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                SourceDestinationData sd = (SourceDestinationData) source.getSelectedItem();
+                SourceDistance = sd.getDistance();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        destination.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                SourceDestinationData sd = (SourceDestinationData) destination.getSelectedItem();
+                DestinationDistance = sd.getDistance();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     protected void onStart() {
@@ -206,17 +259,18 @@ public class FirstPage extends AppCompatActivity {
 
 
         try{
-    // Bug
-   // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$   Null Check on Amount not working $$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
             String eachData[] = text.split(";");
             if(eachData.length <3 || eachData[2] == null){
                 amount ="0";
-            }
 
+            }
+            else{
+                amount = eachData[2];
+            }
             // +";"+"message" -------------- if needed
 
             msg = userId+";"+currentBus+";"+amount;
+            amountleft.setText("Amount Available:   "+amount);
             tvNFCContent.setText(msg);
         }
         catch (Exception e){

@@ -32,4 +32,15 @@
         android:layout_weight="1"
         android:textColor="@color/colorPrimaryDark"
         />
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Logout"
+        android:textSize="24sp"
+        android:background="@color/main"
+        android:layout_marginLeft="20sp"
+        android:layout_marginRight="20sp"
+        />
 </LinearLayout>
