@@ -4,11 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,12 +25,13 @@ public class MainActivity extends AppCompatActivity {
     private Button login;
     private  FirebaseAuth mAuth;
     private  FirebaseAuth.AuthStateListener mAuthListiner;
+    private Spinner spinner;
     SqliteDatabaseHelper sqliteDatabaseHelper;
     String place;
     String dist;
     String busno;
     String buses[][] = {
-            {"Tambo", "0", "360"},
+            {"TAMBO", "0", "360"},
             {"DHOBI GHAT","0.6", "360"},
             {"CHEETA CAMP","1.5","360"},
             {"MANDALA","2.5", "360"},
@@ -55,18 +58,39 @@ public class MainActivity extends AppCompatActivity {
             {"UMARSHI CHOWK","8.7","361"},
             {"NEHRU NAGAR","9.5","361"},
             {"KURLA STATION","10.5","361"},
-            {"test","est","38"}
+            {"KURLA STATION","0","501"},
+            {"NEHRU NAGAR","1","501"},
+            {"UMARSHI CHOWK","1.7","501"},
+            {"BHAKTI BHAVAN","2.5","501"},
+            {"BASANT PARK","3.5","501"},
+            {"NAVJEEVAN SOCIETY","4.3","501"},
+            {"CHEMBUR COLONY","5","501"},
+            {"RCF COLONY","5.8","501"},
+            {"DEONAR DEPORT","6.5","501"},
+            {"TELECOM FACTORY","7.2","501"},
+            {"AGARWADI","8.1","501"},
+            {"GHANSOLI","9.5","501"},
+            {"RABALE VILLAGE","10.3","501"},
+            {"DIVA VILLAGE","11.5","501"},
+            {"AIROLI VILLAGE","12.7","501"},
+            {"AIROLI SECTOR 09","14","501"},
+            {"AIROLI SECTOR 16","15.6","501"},
+            {"AIROLI SECTOR 17","17","501"}
     };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final SharedPreferences sharedPref =  getSharedPreferences("Buses", 0);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+
+
         sqliteDatabaseHelper = new SqliteDatabaseHelper(this);
         //FireBase Auth
         mAuth = FirebaseAuth.getInstance();
-        long datalenght = sqliteDatabaseHelper.getProfilesCount();
-        if(datalenght == 0){
+        long datalength = sqliteDatabaseHelper.getProfilesCount();
+        if(datalength == 0){
             for(String[] data: buses){
                 place = data[0];
                 dist = data[1];
@@ -78,12 +102,16 @@ public class MainActivity extends AppCompatActivity {
         email = (EditText) findViewById(R.id.editEmail);
         pass = (EditText) findViewById(R.id.editPass);
         login = (Button) findViewById(R.id.login);
+        spinner = (Spinner) findViewById(R.id.spinner);
 
         mAuthListiner =  new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!= null){
+                    String bus_no = spinner.getSelectedItem().toString();
                     Intent i=new Intent(MainActivity.this, OptionActivity.class);
+                    editor.putString("bus_no",bus_no);
+                    editor.commit();
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                 }

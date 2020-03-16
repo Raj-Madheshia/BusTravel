@@ -4,6 +4,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -14,7 +16,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +26,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FirstPage extends AppCompatActivity {
 //    private Button signout;
@@ -36,7 +44,12 @@ public class FirstPage extends AppCompatActivity {
 
     private  FirebaseAuth.AuthStateListener mAuthListiner;
     private  FirebaseAuth mAuth;
-
+    private FirebaseUser currentUser;
+    SqliteDatabaseHelper sqliteDatabaseHelper;
+    private String userId;
+    private String amount;
+    private String msg = "";
+    private String currentBus;
     NfcAdapter nfcAdapter;
     PendingIntent pendingIntent;
     IntentFilter writeTagFilters[];
@@ -47,10 +60,17 @@ public class FirstPage extends AppCompatActivity {
     TextView tvNFCContent;
     TextView message;
     Button btnWrite;
+    private Spinner source, destination;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_page);
+
+        final SharedPreferences sharedPref =  getSharedPreferences("Buses", 0);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        currentBus = sharedPref.getString("bus_no",null);
+
+        sqliteDatabaseHelper = new SqliteDatabaseHelper(this);
 
 
 // #################################  Signout method ######################################
@@ -67,6 +87,8 @@ public class FirstPage extends AppCompatActivity {
 // #####################################################################################
         context = this;
         mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        userId = currentUser.getUid();
 
         mAuthListiner =  new FirebaseAuth.AuthStateListener() {
             @Override
@@ -83,6 +105,22 @@ public class FirstPage extends AppCompatActivity {
         tvNFCContent = (TextView) findViewById(R.id.nfc_contents);
         message = (TextView) findViewById(R.id.edit_message);
         btnWrite = (Button) findViewById(R.id.button);
+        source = (Spinner) findViewById(R.id.source);
+        destination = (Spinner) findViewById(R.id.destination);
+
+        Cursor res = sqliteDatabaseHelper.getValByBusno(currentBus);
+        if(res.getCount()!=0) {
+            List<SourceDestinationData> data = new ArrayList<>();
+            while(res.moveToNext()){
+                SourceDestinationData detail = new SourceDestinationData(res.getString(0),res.getString(1),res.getString(2));
+                data.add(detail);
+            }
+            ArrayAdapter<SourceDestinationData> adapter = new ArrayAdapter<SourceDestinationData>(this,
+                    android.R.layout.simple_spinner_item,data);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            source.setAdapter(adapter);
+            destination.setAdapter(adapter);
+        }
 
         btnWrite.setOnClickListener(new View.OnClickListener()
         {
@@ -92,7 +130,10 @@ public class FirstPage extends AppCompatActivity {
                     if(myTag ==null) {
                         Toast.makeText(context, ERROR_DETECTED, Toast.LENGTH_LONG).show();
                     } else {
-                        write(message.getText().toString(), myTag);
+
+                        // +";"+message.getText().toString()
+                        msg = userId+";"+currentBus+";"+amount;
+                        write(msg, myTag);
                         Toast.makeText(context, WRITE_SUCCESS, Toast.LENGTH_LONG ).show();
                     }
                 } catch (IOException e) {
@@ -162,7 +203,26 @@ public class FirstPage extends AppCompatActivity {
             Toast.makeText(FirstPage.this,"Error while reading",Toast.LENGTH_SHORT).show();
         }
 
-        tvNFCContent.setText("NFC Content: " + text);
+
+        try{
+    // Bug
+   // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$   Null Check on Amount not working $$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+            String eachData[] = text.split(";");
+            if(eachData.length <3 || eachData[2] == null){
+                amount ="0";
+            }
+
+            // +";"+"message" -------------- if needed
+
+            msg = userId+";"+currentBus+";"+amount;
+            tvNFCContent.setText(msg);
+        }
+        catch (Exception e){
+            Toast.makeText(FirstPage.this,"Something went wrong",Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
     /******************************************************************************

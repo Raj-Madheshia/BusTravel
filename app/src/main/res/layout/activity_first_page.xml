@@ -2,36 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:padding="20sp"
     android:orientation="vertical" >
-
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Write a message: ">
-    </TextView>
-
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/amountleft"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20sp" >
-
-        <EditText
-            android:id="@+id/edit_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:hint="message" />
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Write" />
-    </LinearLayout>
+        android:text="Amount Available: "
+        android:textSize="20sp"
+        />
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="30sp"
+        android:layout_marginBottom="15sp"
+        android:id="@+id/source" />
+    <Spinner
+        android:id="@+id/destination"
+        android:layout_width="match_parent"
+        android:layout_height="30sp"
+        android:layout_marginBottom="15sp"
+        />
+    <EditText
+        android:id="@+id/edit_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="message" />
     <TextView
         android:id="@+id/nfc_contents"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_gravity="center_horizontal|center"
+        android:text="Print Ticket" />
+
 </LinearLayout>

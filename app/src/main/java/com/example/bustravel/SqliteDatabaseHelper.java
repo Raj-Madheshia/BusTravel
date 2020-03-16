@@ -2,6 +2,7 @@ package com.example.bustravel;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -48,4 +49,9 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    public Cursor getValByBusno(String busno){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =   db.rawQuery("select PLACE, DISTANCE, BUS_NO from "+TABLE_NAME+" where BUS_NO"+"="+ busno, null);
+        return res;
+    }
 }
